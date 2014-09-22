@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    
+	<properties>
+	    <!-- properties para o nome do arquivo -->
+		<property name="name">treinamento</property>
+		<!-- properties para como a linha do arquivo será mostrada -->
+		<property name="pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%p] %C{1}.%M:%L :: %msg%n</property>
+	</properties>
+	
+	<appenders>
+	    
+	    <!-- padrão de linha de log dentro do CONSOLE -->
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="${pattern}" />
+		</Console>
+		
+		<!-- padrão de nome de arquivo rotacionado -->
+		<RollingFile name="RollingFile" fileName="/opt/logs/${name}.log"
+			filePattern="/opt/logs/$${date:yyyy-MM}/${name}-%d{yyyy-MM-dd}-%i.log.gz">
+			
+			<PatternLayout>
+				<pattern>${pattern}</pattern> <!-- padrão de linha de log dentro do ARQUIVO -->
+			</PatternLayout>
+			
+			<Policies>
+				<TimeBasedTriggeringPolicy /><!-- Rotaciona todos os dias -->
+				<SizeBasedTriggeringPolicy size="100 MB" /> <!-- OU a cada 100 MB -->
+			</Policies>
+			
+		</RollingFile>
+		
+	</appenders>
+	
+	<loggers>
+	    
+		<root level="debug"> <!-- Logará tudo -->
+			<appender-ref ref="Console" /> <!-- Logará para o console -->
+			<appender-ref ref="RollingFile" /> <!-- Logará para o arquivo rotativo -->
+		</root>
+		
+	</loggers>
+	
+</configuration>
+
+<!--
+###### Configuração de pattern to log4j ######
+
+Conversion
+Character				Meaning
+c				Used to output the category of the logging event. For example, for the category name "a.b.c" the pattern %c{2} will output "b.c".
+C				Used to output the fully qualified class name of the caller issuing the logging request. For example, for the class name "org.apache.xyz.SomeClass", the pattern %C{1} will output "SomeClass".
+d				Used to output the date of the logging event. For example, %d{HH:mm:ss,SSS} or %d{dd MMM yyyy HH:mm:ss,SSS}.
+F				Used to output the file name where the logging request was issued.
+l				Used to output location information of the caller which generated the logging event.
+L				Used to output the line number from where the logging request was issued.
+m				Used to output the application supplied message associated with the logging event.
+M				Used to output the method name where the logging request was issued.
+n				Outputs the platform dependent line separator character or characters.
+p				Used to output the priority of the logging event.
+r				Used to output the number of milliseconds elapsed from the construction of the layout until the creation of the logging event.
+t				Used to output the name of the thread that generated the logging event.
+x				Used to output the NDC (nested diagnostic context) associated with the thread that generated the logging event.
+X				The X conversion character is followed by the key for the MDC. For example, X{clientIP} will print the information stored in the MDC against the key clientIP.
+%				The literal percent sign. %% will print a % sign.
+
+Format modifier 	left justify 	minimum width 	maximum width           	comment
+%20c 	               false 	           20 	        none 	        Left pad with spaces if the category name is less than 20 characters long.
+%-20c 	                true 	           20 	        none 	        Right pad with spaces if the category name is less than 20 characters long.
+%.30c 	                NA 	              none 	         30 	        Truncate from the beginning if the category name is longer than 30 characters.
+%20.30c 	           false 	           20 	         30 	        Left pad with spaces if the category name is shorter than 20 characters. However, if category name is longer than 30 characters, hen truncate from the beginning.
+%-20.30c 	           true 	           20 	         30 	        Right pad with spaces if the category name is shorter than 20 characters. However, if category name is longer than 30 characters, then truncate from the beginning.
+--> 
